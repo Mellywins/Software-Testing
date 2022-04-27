@@ -1,4 +1,4 @@
-import { TaskEntity } from '@todo/entity/task.entity';
+import { TaskEntity } from './task.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -18,9 +18,9 @@ export class TodoEntity {
   @CreateDateColumn() createdOn?: Date;
   @CreateDateColumn() updatedOn?: Date;
 
-  @ManyToOne(type => UserEntity)
+  @ManyToOne((type) => UserEntity, { cascade: true })
   owner?: UserEntity;
 
-  @OneToMany(type => TaskEntity, task => task.todo)
+  @OneToMany((type) => TaskEntity, (task) => task.todo, { cascade: true })
   tasks?: TaskEntity[];
 }

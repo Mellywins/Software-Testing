@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
-import { TodoEntity } from '@todo/entity/todo.entity';
+import { TodoEntity } from './entity/todo.entity';
 import { TodoDto } from './dto/todo.dto';
 import { toTodoDto } from './mapper/mapper';
 import { CreateTodoDto } from './dto/todo.create.dto';
@@ -20,7 +20,7 @@ export class TodoService {
 
   async getAllTodo(): Promise<TodoDto[]> {
     const todos = await this.todoRepo.find({ relations: ['tasks', 'owner'] });
-    return todos.map(todo => toTodoDto(todo));
+    return todos.map((todo) => toTodoDto(todo));
   }
 
   async getOneTodo(id: string): Promise<TodoDto> {

@@ -1,7 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { TaskEntity } from './todo/entity/task.entity';
+import { TodoEntity } from './todo/entity/todo.entity';
+import { UserEntity } from './todo/entity/user.entity';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { DatabaseInitService } from './database-init.service';
 import { TodoModule } from './todo/todo.module';
 
 @Module({
@@ -15,10 +19,12 @@ import { TodoModule } from './todo/todo.module';
       password: 'karim',
       database: 'testDB',
       entities: ['dist/**/*.entity{.ts,.js}'],
+      migrations: ['dist/**/*.migration{.ts,.js}'],
       synchronize: true,
     }),
+    TypeOrmModule.forFeature([UserEntity, TodoEntity, TaskEntity]),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, DatabaseInitService],
 })
 export class AppModule {}

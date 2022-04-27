@@ -1,7 +1,7 @@
-import { TaskDto } from '@todo/dto/task.dto';
-import { TodoEntity } from '@todo/entity/todo.entity';
-import { TodoDto } from '@todo/dto/todo.dto';
-import { TaskEntity } from '@todo/entity/task.entity';
+import { TaskDto } from '../dto/task.dto';
+import { TodoEntity } from '../entity/todo.entity';
+import { TodoDto } from '../dto/todo.dto';
+import { TaskEntity } from '../entity/task.entity';
 import { UserEntity } from '../entity/user.entity';
 import { UserDto } from '../dto/user.dto';
 
