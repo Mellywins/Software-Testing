@@ -12,6 +12,7 @@ import { UsersService } from './users.service';
 
 @Injectable()
 export class TodoService {
+  [x: string]: any;
   constructor(
     @InjectRepository(TodoEntity)
     private readonly todoRepo: Repository<TodoEntity>,
@@ -87,7 +88,7 @@ export class TodoService {
     return toTodoDto(todo);
   }
 
-  async destoryTodo(id: string): Promise<TodoDto> {
+  async destroyTodo(id: string): Promise<TodoDto> {
     const todo: TodoEntity = await this.todoRepo.findOne({
       where: { id },
       relations: ['tasks', 'owner'],

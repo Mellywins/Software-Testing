@@ -3,21 +3,14 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { TodoEntity } from '../entity/todo.entity';
 import { TaskEntity } from '../entity/task.entity';
 import { TaskService } from './task.service';
+import {
+  mockTaskRepository,
+  mockTodoRepository,
+} from '../test-artifacts/repositories/mocks';
 
 describe('TaskService', () => {
   let service: TaskService;
-  const mockTaskRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-  };
-  const mockTodoRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [

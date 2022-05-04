@@ -4,7 +4,6 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  OneToMany,
   BeforeInsert,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
