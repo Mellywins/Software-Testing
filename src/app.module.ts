@@ -19,7 +19,6 @@ import { TodoModule } from './todo/todo.module';
       password: 'karim',
       database: 'testDB',
       entities: ['dist/**/*.entity{.ts,.js}'],
-      migrations: ['dist/**/*.migration{.ts,.js}'],
       synchronize: true,
     }),
     TypeOrmModule.forFeature([UserEntity, TodoEntity, TaskEntity]),

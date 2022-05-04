@@ -50,7 +50,7 @@ export class TodoController {
   }
 
   @Delete(':id')
-  async destory(@Param('id') id: string): Promise<TodoDto> {
+  async destroy(@Param('id') id: string): Promise<TodoDto> {
     return await this.todoService.destoryTodo(id);
   }
 }

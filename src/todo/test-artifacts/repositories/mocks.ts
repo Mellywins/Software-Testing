@@ -63,13 +63,15 @@ export const mockTaskRepository = {
     .mockImplementation(
       (todoId: string, taskDto: CreateTaskDto): TaskEntity => {
         const task = new TaskEntity();
+        const todo = mockTodoRepository.findOne(todoId);
         task.name = taskDto.name;
         task.id = 'some-random-id';
-        task.todo.id = todoId;
+        task.todo = todo;
         return task;
       },
-    ),
+    ) as (todoId: string, taskDto: CreateTaskDto) => TaskEntity,
   save: jest.fn().mockImplementation((task: TaskEntity): TaskEntity => task),
+  destroy: jest.fn().mockImplementation((task: TaskEntity) => true),
 };
 export const mockTodoRepository = {
   find: jest

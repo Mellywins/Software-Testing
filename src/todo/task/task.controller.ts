@@ -38,6 +38,6 @@ export class TaskController {
 
   @Delete(':id')
   async destory(@Param('id') id: string): Promise<TaskDto> {
-    return await this.taskService.destoryTask(id);
+    return await this.taskService.destroyTask(id);
   }
 }
