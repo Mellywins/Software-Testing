@@ -41,11 +41,11 @@ export class TodoService {
   }
 
   async createTodo(
-    { username }: UserDto,
+    userId: string,
     createTodoDto: CreateTodoDto,
   ): Promise<TodoDto> {
     const { name, description } = createTodoDto;
-
+    const { username } = await this.usersService.findOne({ id: userId });
     // get the user from db
     const owner = await this.usersService.findOne({ where: { username } });
 

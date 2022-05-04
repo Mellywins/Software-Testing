@@ -36,9 +36,9 @@ export class TodoController {
     @Body() createTodoDto: CreateTodoDto,
     @Req() req: any,
   ): Promise<TodoDto> {
-    const user = req.user as UserDto;
+    const { userId } = createTodoDto;
 
-    return await this.todoService.createTodo(user, createTodoDto);
+    return await this.todoService.createTodo(userId, createTodoDto);
   }
 
   @Put(':id')

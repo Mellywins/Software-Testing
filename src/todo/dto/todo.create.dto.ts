@@ -7,4 +7,7 @@ export class CreateTodoDto {
   @IsOptional()
   @MaxLength(500)
   description?: string;
+
+  @IsNotEmpty()
+  userId: string;
 }
