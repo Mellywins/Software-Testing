@@ -28,9 +28,9 @@ describe('TodoService', () => {
       return todo;
     }),
     createTodo: jest.fn(
-      async (userdto: UserDto, createTodoDto: CreateTodoDto) => {
+      async (userId: string, createTodoDto: CreateTodoDto) => {
         const { name, description } = createTodoDto;
-        const owner = await mockUserRepository.findOne(userdto.id);
+        const owner = await mockUserRepository.findOne(userId);
         const todo: TodoEntity = await mockTodoRepository.create(
           {
             name,
@@ -110,8 +110,9 @@ describe('TodoService', () => {
     const createTodoDto: CreateTodoDto = {
       name: 'test-todo-name-1',
       description: 'test-todo-description-1',
+      userId: userdto.id,
     };
-    const todo = await service.createTodo(userdto, createTodoDto);
+    const todo = await service.createTodo('test-owner-id', createTodoDto);
     expect(todo).toBeDefined();
     expect(todo.name).toBe('test-todo-name-1');
   });
