@@ -1,16 +1,5 @@
 version: '3.7'
 services:
-  app:
-    build:
-      context: .
-    image: karim/tp-test:latest
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    ports:
-      - 3000:3000
-    networks:
-      - webnet
   postgres:
     container_name: postgres
     image: postgres

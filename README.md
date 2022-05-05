@@ -1,73 +1,61 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+# Software testing
+You'll find the written unit tests inside the files matching this pattern `*.spec.ts` 
+In those files, you can distinguish the mocked services that we are testing, where we mock the functions exposed by the service to make them use fake calls to apis or database. Here is an example:
+```typescript
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ npm install
+    createTask: jest.fn(
+      async (todoId: string, taskDto: CreateTaskDto): Promise<TaskEntity> => {
+        const { name } = taskDto;
+        const todo = await mockTodoRepository.findOne(todoId);
+        const task: TaskEntity = await mockTaskRepository.create(
+          todoId,
+          taskDto,
+        );
+        await mockTaskRepository.save(task);
+        return task;
+      },
+    ),
 ```
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+in the file [mocks.ts](./src/todo/test-artifacts/repositories/mocks.ts). You will find all of our repositories pattern mocks and fake data that we'll be using the unit tests.
+the mocked repositories are objects that look like this:
+```typescript
+export const mockSomeRepository = {
+  find: jest.fn(),
+  findOne: jest.fn(),
+  create: jest.fn(),
+  delete: jest.fn(),
+  update: jest.fn()
+}
 ```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+## End to End testing
+In this section we'll create an instance of our backend and run tests on the API it exposes, then test the return HTTP_STATUS and payload against the expected values. Here is an example:
+```typescript
+  it('/api/todos (POST)', async () => {
+    return request(app.getHttpServer())
+      .post('/api/todos')
+      .send({
+        name: 'Newly Posted todo for Test purpose',
+        description: 'Random description',
+        userId: 'cafb1073-0ace-4dec-95e7-8f8934e0d019',
+      })
+      .expect(201)
+      .then((response) => {
+        const payload = response.body;
+        delete payload.id;
+        expect(payload).toStrictEqual({
+          name: 'Newly Posted todo for Test purpose',
+          description: 'Random description',
+          owner: {
+            id: 'cafb1073-0ace-4dec-95e7-8f8934e0d019',
+            username: 'karim',
+            email: 'karim@gmail.com',
+          },
+        });
+      });
+  });
 ```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+## How to run the project:
+1. Clone the repository, make sure you have docker and node 14+ installed
+2. Run `docker-compose up`
+3. run unit & integration tests by : `npm run test`
+4. run e2e tests by: `npm run test:e2e`
