@@ -18,7 +18,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag software-test:latest
+      run: docker build . --file Dockerfile --tag software-testing:latest
     - name: Run the docker images
       run: |
         docker network create test-net |
