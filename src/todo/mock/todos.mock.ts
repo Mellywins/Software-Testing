@@ -2,48 +2,48 @@ import { TodoEntity } from 'src/todo/entity/todo.entity';
 
 export const todos: TodoEntity[] = [
   {
-    id: 'eac400ba-3c78-11e9-b210-d663bd873d93',
-    name: 'Supermarket Todo list',
+    id: '9104c0ef-d6af-47ef-9bbd-7b71ab0e4e26',
+    name: 'House chores',
     tasks: [
       {
-        id: 'b91a5400-3cce-11e9-b210-d663bd873d93',
-        name: 'Bring coffee',
+        id: '0166fa6b-22f1-4bac-b715-6e878cdece90',
+        name: 'Buy groceries',
       },
       {
-        id: 'b91a56c6-3cce-11e9-b210-d663bd873d93',
-        name: 'Bring banana',
+        id: '5ec85af9-ecf2-4a39-b772-5c8df018967c',
+        name: 'Wash dishes',
       },
     ],
   },
   {
-    id: 'eac40736-3c78-11e9-b210-d663bd873d93',
-    name: 'Office Todo list',
+    id: 'f794689b-a9e2-4404-8aa4-34192f6b8003',
+    name: 'Office Chores',
     tasks: [
       {
-        id: 'b91a5a90-3cce-11e9-b210-d663bd873d93',
-        name: 'Bring chairs',
+        id: '098fd1ea-ecb0-4693-9128-8e2a5b96eeb4',
+        name: 'Shred the outdated documents',
       },
       {
-        id: 'b91a5bf8-3cce-11e9-b210-d663bd873d93',
-        name: 'Bring tables',
+        id: 'afc3f140-c4e0-4770-a014-095de6a9fb4f',
+        name: 'Archive the old files',
       },
     ],
   },
   {
-    id: 'eac408d0-3c78-11e9-b210-d663bd873d93',
+    id: 'fd097652-1cfa-4c98-bff8-d85efc43b007',
     name: 'Traveling Todo  list',
   },
   {
-    id: 'eac40a7e-3c78-11e9-b210-d663bd873d93',
+    id: 'd9e6d085-6602-43e0-a4f6-2a0c1363d4bc',
     name: 'Studying Todo list',
   },
   {
-    id: 'eac40c90-3c78-11e9-b210-d663bd873d93',
+    id: '45123a60-ae65-4911-8ee3-d5a2e7b4a87d',
     name: 'Monday Todo list',
   },
   {
-    id: 'eac49c90-3d78-1159-b220-d663bd873d93',
-    name: 'My awesome todo list',
+    id: '8d1a2250-b4bf-4c91-8ad7-7c973b65962f',
+    name: 'Some random Todo list',
     description: 'A new awesome and cool todo list',
   },
 ];

@@ -5,8 +5,6 @@ import { UserDto } from './dto/user.dto';
 import { UserEntity } from './entity/user.entity';
 import { toUserDto } from './mapper/mapper';
 import { CreateUserDto } from './dto/user.create.dto';
-import { LoginUserDto } from './dto/user-login.dto';
-import { comparePasswords } from './mapper/utils';
 
 @Injectable()
 export class UsersService {

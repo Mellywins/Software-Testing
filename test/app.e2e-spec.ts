@@ -2,13 +2,17 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
-import { todos } from '../src/todo/mock/todos.mock';
 import { TodoService } from '../src/todo/todo.service';
-import { assert } from 'console';
+import { UsersService } from '../src/todo/users.service';
+import { UserDto } from '../src/todo/dto/user.dto';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-
+  const owner = {
+    username: 'oussema.zouaghi',
+    email: 'oussema.zouaghi@gmail.com',
+  };
+  let dbOwner: UserDto;
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -16,6 +20,9 @@ describe('AppController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+    dbOwner = await app
+      .get<UsersService>(UsersService)
+      .findOne({ username: owner.username });
   });
 
   it('/ (GET)', () => {
@@ -32,18 +39,18 @@ describe('AppController (e2e)', () => {
   });
   it('/api/todos/:id (GET)', async () => {
     return request(app.getHttpServer())
-      .get('/api/todos/eac408d0-3c78-11e9-b210-d663bd873d93')
+      .get('/api/todos/fd097652-1cfa-4c98-bff8-d85efc43b007')
       .expect(200)
-      .expect({
-        id: 'eac408d0-3c78-11e9-b210-d663bd873d93',
-        name: 'Traveling Todo  list',
-        description: null,
-        owner: {
-          id: 'cafb1073-0ace-4dec-95e7-8f8934e0d019',
-          username: 'karim',
-          email: 'karim@gmail.com',
-        },
-        tasks: [],
+      .then((resp) => {
+        const payload = resp.body;
+        delete payload.owner.id;
+        expect({
+          id: 'fd097652-1cfa-4c98-bff8-d85efc43b007',
+          name: 'Traveling Todo  list',
+          description: null,
+          owner: dbOwner,
+          tasks: [],
+        });
       });
   });
   it('/api/todos (POST)', async () => {
@@ -52,7 +59,7 @@ describe('AppController (e2e)', () => {
       .send({
         name: 'Newly Posted todo for Test purpose',
         description: 'Random description',
-        userId: 'cafb1073-0ace-4dec-95e7-8f8934e0d019',
+        userId: dbOwner.id,
       })
       .expect(201)
       .then((response) => {
@@ -61,42 +68,28 @@ describe('AppController (e2e)', () => {
         expect(payload).toStrictEqual({
           name: 'Newly Posted todo for Test purpose',
           description: 'Random description',
-          owner: {
-            id: 'cafb1073-0ace-4dec-95e7-8f8934e0d019',
-            username: 'karim',
-            email: 'karim@gmail.com',
-          },
+          owner: dbOwner,
         });
       });
   });
   it('/api/todos (PUT)', async () => {
     return request(app.getHttpServer())
-      .put('/api/todos/eac40736-3c78-11e9-b210-d663bd873d93')
+      .put('/api/todos/fd097652-1cfa-4c98-bff8-d85efc43b007')
       .send({
         name: 'Edited Name',
-        description: 'Office Todo list',
-        userId: 'cafb1073-0ace-4dec-95e7-8f8934e0d019',
+        description: 'Edited description of the Office Chores',
+        userId: dbOwner.id,
       })
       .expect(200)
-      .expect({
-        id: 'eac40736-3c78-11e9-b210-d663bd873d93',
-        name: 'Edited Name',
-        description: 'Office Todo list',
-        owner: {
-          id: 'cafb1073-0ace-4dec-95e7-8f8934e0d019',
-          username: 'karim',
-          email: 'karim@gmail.com',
-        },
-        tasks: [
-          {
-            id: 'b91a5a90-3cce-11e9-b210-d663bd873d93',
-            name: 'Bring chairs',
-          },
-          {
-            id: 'b91a5bf8-3cce-11e9-b210-d663bd873d93',
-            name: 'Bring tables',
-          },
-        ],
+      .then((resp) => {
+        const payload = resp.body;
+        expect({
+          id: 'fd097652-1cfa-4c98-bff8-d85efc43b007',
+          name: 'Edited Name',
+          description: 'Edited description of the Office Chores',
+          owner: dbOwner,
+          tasks: [],
+        }).toStrictEqual(payload);
       });
   });
   afterAll(async () => {

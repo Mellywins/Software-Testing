@@ -104,7 +104,6 @@ export const mockUserRepository = {
     async (): Promise<UserEntity[]> => Promise.resolve([testOwner]),
   ),
   findOne: jest.fn(async (id: string): Promise<UserEntity> => {
-    console.log('inside find one func: ', id);
     if (id == testOwner.id) {
       return Promise.resolve(testOwner);
     }

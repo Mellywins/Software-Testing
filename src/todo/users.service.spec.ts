@@ -44,13 +44,13 @@ describe('UsersService', () => {
   });
   it('user creation unit test', async () => {
     const user = await service.create({
-      username: 'karim',
-      email: 'karim@gmail.com',
+      username: 'oussema.zouaghi',
+      email: 'oussema.zouaghi@gmail.com',
       password: '123456',
     });
     expect(user).toBeDefined();
-    expect(user.username).toBe('karim');
-    expect(user.email).toBe('karim@gmail.com');
+    expect(user.username).toBe('oussema.zouaghi');
+    expect(user.email).toBe('oussema.zouaghi@gmail.com');
   });
   it('user find one unit test', async () => {
     const user = await service.findOne({ id: testOwner.id });

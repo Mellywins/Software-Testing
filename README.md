@@ -1,61 +1,77 @@
-# Software testing
-You'll find the written unit tests inside the files matching this pattern `*.spec.ts` 
-In those files, you can distinguish the mocked services that we are testing, where we mock the functions exposed by the service to make them use fake calls to apis or database. Here is an example:
-```typescript
+# Software Testing: Unit, Integration, End-to-end
+This repository will hold an example of how to test a backend application. 
+## Navigation guide
+You'll find the test written in files following this glob pattern: `*.spec.ts`
+The mocked data will be contained in this [todos.mock.ts](./src/todo/mock/todos.mock.ts) file.
+The e2e tests are written in this file: [app.e2e-spec.ts](./test/app.e2e-spec.ts).
+Note that the e2e test will perform changes to the database, as this project is puprosely made for test reasons. In real life scenarios, you'd want to use a seperate testing database for this feature.
+## Running the tests:
+To run the test, you first need to build the project and startup postgres with docker.
+Follow these steps:
+1. Clone the repository.
+2. `npm install`
+3. `npm run build`
+4. `docker-compose up`
+5. `npm run test` for unit and integration tests.
+6. `npm run test:e2e` to run the e2e tests.
 
-    createTask: jest.fn(
-      async (todoId: string, taskDto: CreateTaskDto): Promise<TaskEntity> => {
-        const { name } = taskDto;
-        const todo = await mockTodoRepository.findOne(todoId);
-        const task: TaskEntity = await mockTaskRepository.create(
-          todoId,
-          taskDto,
-        );
-        await mockTaskRepository.save(task);
-        return task;
-      },
-    ),
-```
-in the file [mocks.ts](./src/todo/test-artifacts/repositories/mocks.ts). You will find all of our repositories pattern mocks and fake data that we'll be using the unit tests.
-the mocked repositories are objects that look like this:
+## Detailed explanation
+For the unit tests, since we'd want to mock the API calls and the Database calls, I encapculated the mocked repositories pattern used for the different entities in this [file](./src/todo/test-artifacts/repositories/mocks.ts). This is a brief explanation of the file:
+
+Every repository is in this form: 
 ```typescript
-export const mockSomeRepository = {
+const xRepository = {
   find: jest.fn(),
   findOne: jest.fn(),
   create: jest.fn(),
   delete: jest.fn(),
-  update: jest.fn()
+  update: jest.fn(),
 }
 ```
-## End to End testing
-In this section we'll create an instance of our backend and run tests on the API it exposes, then test the return HTTP_STATUS and payload against the expected values. Here is an example:
+Then the jest library allows to mock the implementation of the repository functions to fit our test logic.
+What's left now is to override the NestJS Provider of the Typeorm to use our object instead of the abstract functions provided by the typeorm library. We do it this way:
 ```typescript
-  it('/api/todos (POST)', async () => {
-    return request(app.getHttpServer())
-      .post('/api/todos')
-      .send({
-        name: 'Newly Posted todo for Test purpose',
-        description: 'Random description',
-        userId: 'cafb1073-0ace-4dec-95e7-8f8934e0d019',
-      })
-      .expect(201)
-      .then((response) => {
-        const payload = response.body;
-        delete payload.id;
-        expect(payload).toStrictEqual({
-          name: 'Newly Posted todo for Test purpose',
-          description: 'Random description',
-          owner: {
-            id: 'cafb1073-0ace-4dec-95e7-8f8934e0d019',
-            username: 'karim',
-            email: 'karim@gmail.com',
-          },
-        });
-      });
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        UsersService,
+        {
+          provide: getRepositoryToken(UserEntity),
+          useValue: mockUserRepository,
+        },
+      ],
+    })
+      .overrideProvider(UsersService)
+      .useValue(mockUserService)
+      .compile();
+
+    service = module.get<UsersService>(UsersService);
   });
 ```
-## How to run the project:
-1. Clone the repository, make sure you have docker and node 14+ installed
-2. Run `docker-compose up`
-3. run unit & integration tests by : `npm run test`
-4. run e2e tests by: `npm run test:e2e`
+In the normal service definition, we defined it this way instead
+```typescript
+export class UsersService {
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly userRepo: Repository<UserEntity>,
+  ) {}
+  // Some methods definitions
+}
+```
+The userRepo is a dependency of the service, so we have to overwrite it with our mocked dependency to run the unit tests.
+
+After the dependencies are mocked, we now have to mock the service itself. This can be achieved like this: 
+```typescript
+describe('UsersService', () => {
+  let service: UsersService;
+  const mockUserService = {
+    findOne: jest.fn((options) => {
+      return mockUserRepository.findOne(options.id);
+    }),
+    create: jest.fn(
+      async (userDto: CreateUserDto): Promise<UserEntity> =>
+        mockUserRepository.create(userDto),
+    ),
+  };
+```
