@@ -5,10 +5,13 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
+env:
+  DB_USER: ${{secrets.DB_USER}}
+  DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+  DB_NAME: ${{secrets.DB_NAME}}
 jobs:
 
-  build:
+  build&test:
 
     runs-on: ubuntu-latest
 
@@ -16,4 +19,14 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag software-test:latest
+    - name: Run the docker images
+      run: |
+        docker network create test-net |
+        docker run --network test-net --name software-testing -idt software-testing:latest |
+        docker run -d --network test-net --name postgres -e POSTGRES_USER=$DB_USER -e $POSTGRES_PASSWORD=$DB_PASSWORD -e POSTGRES_DB= $DB_NAME |
+        docker exec -it software-testing /bin/sh -c "npm run test" |
+        docker exec -it software-testing /bin/sh -c "npm run test:e2e"
+
+
+  
       
