@@ -10,6 +10,6 @@ RUN npm install @nestjs/cli -g
 RUN npm install --production=false
 COPY . .
 
-RUN nest build core
+RUN nest build 
 # COPY . .
-CMD nest start core --watch
+RUN nest start &
