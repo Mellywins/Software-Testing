@@ -11,7 +11,7 @@ env:
   DB_NAME: ${{secrets.DB_NAME}}
 jobs:
 
-  build&test:
+  build_test:
 
     runs-on: ubuntu-latest
 
