@@ -21,10 +21,10 @@ jobs:
       run: docker build . --file Dockerfile --tag software-testing:latest
     - name: Run the docker images
       run: |
-        docker network create test-net |
-        docker run --network test-net --name software-testing -idt software-testing:latest |
-        docker run -d --network test-net --name postgres -e POSTGRES_USER=$DB_USER -e $POSTGRES_PASSWORD=$DB_PASSWORD -e POSTGRES_DB=$DB_NAME |
-        docker exec -it software-testing /bin/sh -c "npm run test" |
+        docker network create test-net 
+        docker run --network test-net --name software-testing -idt software-testing:latest 
+        docker run -d --network test-net --name postgres -e POSTGRES_USER=$DB_USER -e $POSTGRES_PASSWORD=$DB_PASSWORD -e POSTGRES_DB=$DB_NAME 
+        docker exec -it software-testing /bin/sh -c "npm run test" 
         docker exec -it software-testing /bin/sh -c "npm run test:e2e"
 
 
