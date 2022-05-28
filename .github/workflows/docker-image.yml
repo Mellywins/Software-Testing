@@ -14,7 +14,24 @@ jobs:
   build_test:
 
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: $DB_USER
+          POSTGRES_PASSWORD: $DB_PASSWORD
+          POSTGRES_DB: $DB_NAME
 
+        ports:
+          - 5432:5432
+        volumes:
+          - ./db_dump.sql:/docker-entrypoint-initdb.d/db_dump.sql
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
@@ -33,11 +50,9 @@ jobs:
         docker ps
     - name: Set up Testing Database and Run End to End Tests.
       run: |
-        docker run -d --name postgres -e POSTGRES_USER=oussema.zouaghi -e POSTGRES_PASSWORD=oussema.zouaghi -e POSTGRES_DB=testDB -p 5432:5432 --volume "db_dump.sql:/docker-entrypoint-initdb.d/db_dump.sql" postgres
         docker ps
-        sleep 15
         netstat -plnt
-        docker logs postgres
+        docker ps
         npm run test:e2e
 
 
