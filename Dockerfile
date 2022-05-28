@@ -5,7 +5,7 @@ ENV NODE_ENV $NODE_ENV
 WORKDIR /usr/src/app
 
 
-COPY package*.json .
+COPY package*.json ./
 RUN npm install @nestjs/cli -g
 RUN npm install --production=false
 COPY . .
