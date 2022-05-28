@@ -75,3 +75,4 @@ describe('UsersService', () => {
     ),
   };
 ```
+pg_dump -h localhost -U oussema.zouaghi --dbname=testDB --file="/home/{data_source}-{timestamp}-dump.sql" --clean --insert

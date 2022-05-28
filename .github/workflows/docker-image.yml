@@ -22,7 +22,7 @@ jobs:
     - name: Run the docker images
       run: |
         docker network create test-net 
-        docker run -d --network test-net --name postgres -e POSTGRES_USER=$DB_USER -e POSTGRES_PASSWORD=$DB_PASSWORD -e POSTGRES_DB=$DB_NAME postgres
+        docker run -d --network test-net --volume "./db_dump.sql:/docker-entrypoint-initdb.d/db_dump.sql" --name postgres -e POSTGRES_USER=$DB_USER -e POSTGRES_PASSWORD=$DB_PASSWORD -e POSTGRES_DB=$DB_NAME postgres
         docker ps
         docker run --network test-net --name software-testing -id software-testing:latest 
         sleep 10
