@@ -12,7 +12,7 @@ import { TodoModule } from './todo/todo.module';
     TodoModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'postgres',
+      host: 'localhost',
       port: 5432,
       username: 'oussema.zouaghi',
       password: 'oussema.zouaghi',

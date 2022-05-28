@@ -12,4 +12,4 @@ COPY . .
 
 RUN nest build 
 # COPY . .
-RUN nest start &
+# RUN nest start &
