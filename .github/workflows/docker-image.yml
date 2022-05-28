@@ -33,8 +33,6 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 14
-    # - name: Build the Docker image
-    #   run: docker build . --file Dockerfile --tag software-testing:latest
     - name: Build the project
       run: |
         npm install webpack @nestjs/cli
@@ -43,13 +41,9 @@ jobs:
     - name: Run Unit and Integration tests
       run: |
         npm run test
-        docker ps
     - name: Set up Testing Database and Run End to End Tests.
       run: |
         cat database/db_dump.sql | docker exec -i $(docker ps -q) psql -U ${{secrets.DB_USER}}  -d  ${{secrets.DB_NAME}}
-        docker ps
-        netstat -plnt
-        docker ps
         npm run test:e2e
 
 
