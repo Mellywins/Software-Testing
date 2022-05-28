@@ -28,7 +28,7 @@ jobs:
         docker run -d --network test-net --name postgres -e POSTGRES_USER=$DB_USER -e POSTGRES_PASSWORD=$DB_PASSWORD -e POSTGRES_DB=$DB_NAME -p 5432:5432 --volume "db_dump.sql:/docker-entrypoint-initdb.d/db_dump.sql" postgres
     - name: Build the project
       run: |
-        npm install @nestjs/cli -g
+        npm install @nestjs/cli 
         npm install
         npm run build
     - name: Run Unit and Integration tests
