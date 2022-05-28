@@ -35,6 +35,7 @@ jobs:
       run: |
         docker run -d --name postgres -e POSTGRES_USER=$DB_USER -e POSTGRES_PASSWORD=$DB_PASSWORD -e POSTGRES_DB=$DB_NAME -p 5432:5432 --volume "db_dump.sql:/docker-entrypoint-initdb.d/db_dump.sql" postgres
         docker ps
+        sleep 10
         docker logs postgres
         npm run test:e2e
 
