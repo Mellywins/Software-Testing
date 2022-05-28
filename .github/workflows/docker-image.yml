@@ -25,7 +25,7 @@ jobs:
         ports:
           - 5432:5432
         volumes:
-          - ./db_dump.sql:/docker-entrypoint-initdb.d/db_dump.sql
+          - ${PWD}/db_dump.sql:/docker-entrypoint-initdb.d/db_dump.sql
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
