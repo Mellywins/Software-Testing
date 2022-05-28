@@ -13,7 +13,6 @@ jobs:
     services:
       postgres:
         image: postgres
-        name: postgres
         env:
           POSTGRES_USER: ${{secrets.DB_USER}}
           POSTGRES_PASSWORD: ${{secrets.DB_PASSWORD}}
@@ -47,7 +46,7 @@ jobs:
         docker ps
     - name: Set up Testing Database and Run End to End Tests.
       run: |
-        cat database/db_dump.sql | docker exec -i postgres psql -U ${{secrets.DB_USER}}  -d  ${{secrets.DB_NAME}}
+        cat database/db_dump.sql | docker exec -i $(docker ps -q) psql -U ${{secrets.DB_USER}}  -d  ${{secrets.DB_NAME}}
         docker ps
         netstat -plnt
         docker ps
