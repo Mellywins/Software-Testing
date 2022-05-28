@@ -34,6 +34,8 @@ jobs:
     - name: Set up Testing Database and Run End to End Tests.
       run: |
         docker run -d --name postgres -e POSTGRES_USER=$DB_USER -e POSTGRES_PASSWORD=$DB_PASSWORD -e POSTGRES_DB=$DB_NAME -p 5432:5432 --volume "db_dump.sql:/docker-entrypoint-initdb.d/db_dump.sql" postgres
+        docker ps
+        docker logs postgres
         npm run test:e2e
 
 
