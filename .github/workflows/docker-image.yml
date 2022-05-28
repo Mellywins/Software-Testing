@@ -22,10 +22,6 @@ jobs:
         node-version: 14
     # - name: Build the Docker image
     #   run: docker build . --file Dockerfile --tag software-testing:latest
-    - name: Run the testing postgres Database and initialize it.
-      run: |
-        docker network create test-net 
-        docker run -d --network test-net --name postgres -e POSTGRES_USER=$DB_USER -e POSTGRES_PASSWORD=$DB_PASSWORD -e POSTGRES_DB=$DB_NAME -p 5432:5432 --volume "db_dump.sql:/docker-entrypoint-initdb.d/db_dump.sql" postgres
     - name: Build the project
       run: |
         npm install webpack @nestjs/cli
@@ -35,8 +31,9 @@ jobs:
       run: |
         npm run test
         docker ps
-    - name: Run End to End tests
+    - name: Set up Testing Database and Run End to End Tests.
       run: |
+        docker run -d --name postgres -e POSTGRES_USER=$DB_USER -e POSTGRES_PASSWORD=$DB_PASSWORD -e POSTGRES_DB=$DB_NAME -p 5432:5432 --volume "db_dump.sql:/docker-entrypoint-initdb.d/db_dump.sql" postgres
         npm run test:e2e
 
 
